@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Istar Countdown
+Name[de]=Istar Countdown
+Name[ja]=Istar Countdown
+Comment=Countdowns, a timer and a working-time calculator
+Comment[de]=Countdowns, ein Timer und ein Arbeitszeitrechner
+Comment[ja]=カウントダウン、タイマー、勤務時間の計算
+Exec=@KDE_INSTALL_FULL_BINDIR@/istar-countdown
+Icon=chronometer
+Terminal=false
+Categories=Qt;KDE;Utility;Clock;

@@ -1,0 +1,233 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Pascal Klose
+# This file is distributed under the same license as the istar-countdown package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: istar-countdown\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-16 17:48+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#. i18n: %1 is a number of days, %2 the remaining time of day as hh:mm:ss
+#: src/countdowntimer.cpp:76
+#, kde-format
+msgid "%1 day %2"
+msgid_plural "%1 days %2"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/countdowntimer.cpp:84 src/qml/CountdownDialog.qml:22
+#, kde-format
+msgid "Let's go!"
+msgstr ""
+
+#: src/main.cpp:70 src/main.cpp:75 src/main.cpp:94 src/main.cpp:106
+#: src/main.cpp:156 src/qml/Main.qml:13
+#, kde-format
+msgid "Istar Countdown"
+msgstr ""
+
+#: src/main.cpp:122
+#, kde-format
+msgid "Countdown finished"
+msgstr ""
+
+#: src/main.cpp:126
+#, kde-format
+msgid "Show"
+msgstr ""
+
+#: src/main.cpp:157
+#, kde-format
+msgid "Countdowns, a timer and a working-time calculator"
+msgstr ""
+
+#: src/occurrence.cpp:68
+#, kde-format
+msgid "Once"
+msgstr ""
+
+#: src/occurrence.cpp:70
+#, kde-format
+msgid "Every week"
+msgstr ""
+
+#: src/occurrence.cpp:72
+#, kde-format
+msgid "Every second week"
+msgstr ""
+
+#: src/occurrence.cpp:74
+#, kde-format
+msgid "Every month"
+msgstr ""
+
+#: src/occurrence.cpp:76
+#, kde-format
+msgid "Every year"
+msgstr ""
+
+#: src/occurrence.cpp:78
+#, kde-format
+msgid "Birthday"
+msgstr ""
+
+#: src/qml/CountdownDialog.qml:35 src/qml/CountdownsPage.qml:35
+#, kde-format
+msgid "Add Countdown"
+msgstr ""
+
+#: src/qml/CountdownDialog.qml:35
+#, kde-format
+msgid "Edit Countdown"
+msgstr ""
+
+#: src/qml/CountdownDialog.qml:51
+#, kde-format
+msgid "Countdown name"
+msgstr ""
+
+#: src/qml/CountdownDialog.qml:59
+#, kde-format
+msgid "Date and time"
+msgstr ""
+
+#: src/qml/CountdownDialog.qml:67
+#, kde-format
+msgid "Occurrence"
+msgstr ""
+
+#: src/qml/CountdownDialog.qml:76 src/qml/TimerPage.qml:77
+#, kde-format
+msgid "Message when it is over"
+msgstr ""
+
+#: src/qml/CountdownsPage.qml:17 src/qml/Main.qml:74
+#, kde-format
+msgid "Countdowns"
+msgstr ""
+
+#: src/qml/CountdownsPage.qml:67
+#, kde-format
+msgctxt "date and time, then how often it repeats"
+msgid "%1 · %2"
+msgstr ""
+
+#: src/qml/CountdownsPage.qml:73 src/qml/TimerPage.qml:67
+#, kde-format
+msgid "Start"
+msgstr ""
+
+#: src/qml/CountdownsPage.qml:78
+#, kde-format
+msgid "Edit"
+msgstr ""
+
+#: src/qml/CountdownsPage.qml:83
+#, kde-format
+msgid "Delete"
+msgstr ""
+
+#: src/qml/CountdownsPage.qml:98
+#, kde-format
+msgid "No countdowns yet"
+msgstr ""
+
+#: src/qml/CountdownsPage.qml:114
+#, kde-format
+msgid "Delete Countdown"
+msgstr ""
+
+#: src/qml/CountdownsPage.qml:115
+#, kde-format
+msgid ""
+"Do you really want to remove the selected item from your countdown list?"
+msgstr ""
+
+#: src/qml/Main.qml:80 src/qml/TimerPage.qml:16
+#, kde-format
+msgid "Timer"
+msgstr ""
+
+#: src/qml/Main.qml:86 src/qml/WorkTimePage.qml:18
+#, kde-format
+msgid "Working Time"
+msgstr ""
+
+#: src/qml/Main.qml:92
+#, kde-format
+msgid "About Istar Countdown"
+msgstr ""
+
+#: src/qml/TimerPage.qml:20
+#, kde-format
+msgid "Stop"
+msgstr ""
+
+#: src/qml/TimerPage.qml:59
+#, kde-format
+msgid "Count down until"
+msgstr ""
+
+#: src/qml/TimerPage.qml:85
+#, kde-format
+msgid "Gradient start"
+msgstr ""
+
+#: src/qml/TimerPage.qml:93
+#, kde-format
+msgid "Gradient end"
+msgstr ""
+
+#: src/qml/WorkTimePage.qml:22
+#, kde-format
+msgid "Count Down to the End"
+msgstr ""
+
+#: src/qml/WorkTimePage.qml:46
+#, kde-format
+msgctxt "a length of time as hours:minutes"
+msgid "%1:%2"
+msgstr ""
+
+#: src/qml/WorkTimePage.qml:53
+#, kde-format
+msgid "Working start"
+msgstr ""
+
+#: src/qml/WorkTimePage.qml:61
+#, kde-format
+msgid "Pause (minutes)"
+msgstr ""
+
+#: src/qml/WorkTimePage.qml:72
+#, kde-format
+msgid "Target time (hours:minutes)"
+msgstr ""
+
+#: src/qml/WorkTimePage.qml:86
+#, kde-format
+msgid "Working end"
+msgstr ""
+
+#: src/qml/WorkTimePage.qml:94
+#, kde-format
+msgid "Result"
+msgstr ""
+
+#. i18n: %1 is the hours and %2 the minutes of the time worked, e.g. "7 h 45 min"
+#: src/worktime.cpp:88
+#, kde-format
+msgctxt "worked time"
+msgid "%1 h %2 min"
+msgstr ""

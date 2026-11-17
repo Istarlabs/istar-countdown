@@ -1,0 +1,16 @@
+[Global]
+IconName=chronometer
+Name=Istar Countdown
+Comment=Countdowns, a timer and a working-time calculator
+Comment[de]=Countdowns, ein Timer und ein Arbeitszeitrechner
+Comment[ja]=カウントダウン、タイマー、勤務時間の計算
+
+[Event/countdownFinished]
+Name=Countdown finished
+Name[de]=Countdown abgelaufen
+Name[ja]=カウントダウン終了
+Comment=A running countdown has reached its end
+Comment[de]=Ein laufender Countdown ist abgelaufen
+Comment[ja]=実行中のカウントダウンが終了しました
+Action=Popup|Sound
+Sound=Oxygen-Sys-App-Positive.ogg

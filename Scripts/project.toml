@@ -1,0 +1,47 @@
+# What this project differs by. Everything else lives in the shared devscripts checkout.
+name = "istar-countdown"
+env_prefix = "PCD"
+
+[cpp]
+binary = "istar-countdown"
+build_dir = "build"
+build_type = "RelWithDebInfo"
+install_root = "~/.local"
+
+[android]
+# Craft's root (podman, android-qt611 image) holds Qt 6.11.2 and the KF6 built against it, so one source for both.
+qt = "~/dev/projects/kde/craft-android"
+prefix = "~/dev/projects/kde/craft-android"
+application_id = "net.kurokyuu.app.istarcountdown"
+# The NDK the Craft container built the frameworks with. An older one packs a libc++_shared.so that lacks
+# symbols they need (std::__ndk1::__hash_memory), and the app dies in QtLoader at start.
+ndk = "~/Android/Sdk/ndk/30.0.16248370"
+
+# python3 Scripts/rpm.py publish: the package for an RPM repository (see rpm.py's docstring). Its own build
+# directory, so the development build (prefix ~/.local) is left alone.
+[rpm]
+name = "istar-countdown"
+summary = "Countdowns, a timer and a working-time calculator"
+description = "Countdowns with repeats, a ticking text with a two-colour gradient, and a working-day calculator, in Kirigami so they look like the rest of a Plasma session."
+license = "MIT"
+url = "https://github.com/Istarlabs/istar-countdown"
+version_file = "CMakeLists.txt"
+build = [
+    "cmake -S . -B build/rpm -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF",
+    "cmake --build build/rpm",
+    "DESTDIR={stage} cmake --install build/rpm",
+]
+# What QML loads at run time, which rpmbuild cannot see as linked libraries (QtQuick.Dialogs and Effects are in
+# qt6-qtdeclarative), and the icon theme the desktop file's Icon=chronometer comes from.
+requires = ["kf6-kirigami", "kf6-kirigami-addons", "kf6-qqc2-desktop-style", "qt6-qtdeclarative", "breeze-icon-theme"]
+
+[i18n]
+domain = "istar-countdown"
+languages = ["de", "ja"]
+
+[spdx]
+holder = "Pascal Klose"
+licence = "MIT"
+
+[repo]
+main_branch = "master"

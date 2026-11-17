@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Pascal Klose
+# SPDX-License-Identifier: MIT
+
+# QFETCH declares its variable itself, non-const, and cannot be asked to do otherwise.
+InheritParentConfig: true
+Checks: >
+  -misc-const-correctness,
