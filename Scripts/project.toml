@@ -45,3 +45,25 @@ licence = "MIT"
 
 [repo]
 main_branch = "master"
+
+# Created by `repo.py init` and `repo.py labels`, next to the shared ones.
+
+[[repo.labels]]
+name = "area:timer"
+color = "0e8a16"
+description = "Countdowns, occurrences and work time"
+
+[[repo.labels]]
+name = "area:ui"
+color = "5319e7"
+description = "QML pages"
+
+[[repo.labels]]
+name = "android"
+color = "3ddc84"
+description = "The Android build"
+
+[[repo.labels]]
+name = "i18n"
+color = "bfdadc"
+description = "Translations and localization"
