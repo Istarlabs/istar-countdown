@@ -16,6 +16,7 @@ qt_add_qml_module(istar-countdown
         qml/CountdownsPage.qml
         qml/GradientText.qml
         qml/Main.qml
+        qml/TimeField.qml
         qml/TimerPage.qml
         qml/WorkTimePage.qml
     SOURCES

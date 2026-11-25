@@ -41,20 +41,6 @@ Kirigami.ScrollablePage {
         }
     ]
 
-    // The delegates write back to the model on every edit, which breaks a plain binding; a Binding
-    // keeps them in step when the end is recalculated from the start.
-    Binding {
-        target: startField
-        property: "value"
-        value: page.workTime.start
-    }
-
-    Binding {
-        target: endField
-        property: "value"
-        value: page.workTime.end
-    }
-
     function hoursAndMinutes(minutes) {
         return i18nc("a length of time as hours:minutes", "%1:%2", Math.floor(minutes / 60), String(minutes % 60).padStart(2, "0"));
     }
@@ -75,12 +61,10 @@ Kirigami.ScrollablePage {
         FormCard.FormCard {
             Layout.fillWidth: true
 
-            FormCard.FormDateTimeDelegate {
-                id: startField
-
-                text: i18n("Working start")
-                dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
-                onValueChanged: page.workTime.start = value
+            TimeField {
+                label: i18n("Working start")
+                value: page.workTime.start
+                onEdited: time => page.workTime.start = time
             }
 
             FormCard.FormDelegateSeparator {}
@@ -108,12 +92,10 @@ Kirigami.ScrollablePage {
 
             FormCard.FormDelegateSeparator {}
 
-            FormCard.FormDateTimeDelegate {
-                id: endField
-
-                text: i18n("Working end")
-                dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
-                onValueChanged: page.workTime.end = value
+            TimeField {
+                label: i18n("Working end")
+                value: page.workTime.end
+                onEdited: time => page.workTime.end = time
             }
 
             FormCard.FormDelegateSeparator {}
@@ -134,52 +116,36 @@ Kirigami.ScrollablePage {
             Layout.fillWidth: true
 
             Repeater {
-                // A new array on every change, so the delegates are rebuilt from the model: a picker writes its
-                // own value and would no longer follow a binding.
-                model: {
-                    const stamps = page.workTime.pauseStamps;
-                    const pauses = [];
-
-                    for (let index = 0; index < stamps.length; index += 2) {
-                        pauses.push({
-                            begin: stamps[index],
-                            end: index + 1 < stamps.length ? stamps[index + 1] : null
-                        });
-                    }
-
-                    return pauses;
-                }
+                // The number of pauses, not the stamps: an edit then keeps the delegates, and with them the focus
+                // that Tab just moved from a pause's begin to its end.
+                model: Math.ceil(page.workTime.pauseStamps.length / 2)
 
                 delegate: ColumnLayout {
                     id: pause
 
-                    required property var modelData
                     required property int index
+                    readonly property var begin: page.workTime.pauseStamps[index * 2]
+                    // Undefined while the pause is still running.
+                    readonly property var end: page.workTime.pauseStamps[index * 2 + 1]
 
                     Layout.fillWidth: true
                     spacing: 0
 
-                    FormCard.FormDateTimeDelegate {
-                        text: i18nc("%1 is the number of the pause", "Pause %1 began", pause.index + 1)
-                        dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
-                        value: pause.modelData.begin
-                        onValueChanged: page.workTime.setPauseStamp(pause.index * 2, value)
+                    TimeField {
+                        label: i18nc("%1 is the number of the pause", "Pause %1 began", pause.index + 1)
+                        value: pause.begin
+                        onEdited: time => page.workTime.setPauseStamp(pause.index * 2, time)
                     }
 
-                    FormCard.FormDateTimeDelegate {
-                        visible: pause.modelData.end !== null
-                        text: i18nc("%1 is the number of the pause", "Pause %1 ended", pause.index + 1)
-                        dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
-                        value: pause.modelData.end ?? new Date()
-                        onValueChanged: {
-                            if (pause.modelData.end !== null) {
-                                page.workTime.setPauseStamp(pause.index * 2 + 1, value);
-                            }
-                        }
+                    TimeField {
+                        visible: pause.end !== undefined
+                        label: i18nc("%1 is the number of the pause", "Pause %1 ended", pause.index + 1)
+                        value: pause.end ?? pause.begin
+                        onEdited: time => page.workTime.setPauseStamp(pause.index * 2 + 1, time)
                     }
 
                     FormCard.FormTextDelegate {
-                        visible: pause.modelData.end === null
+                        visible: pause.end === undefined
                         text: i18nc("%1 is the number of the pause", "Pause %1 ended", pause.index + 1)
                         description: i18n("Still running")
                     }

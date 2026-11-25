@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: istar-countdown\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 15:25+0100\n"
+"POT-Creation-Date: 2026-11-25 19:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -209,71 +209,71 @@ msgstr ""
 msgid "Count Down to the End"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:59
+#: src/qml/WorkTimePage.qml:45
 #, kde-format
 msgctxt "a length of time as hours:minutes"
 msgid "%1:%2"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:68
+#: src/qml/WorkTimePage.qml:54
 #, kde-format
 msgid "Pause"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:81
+#: src/qml/WorkTimePage.qml:65
 #, kde-format
 msgid "Working start"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:89
+#: src/qml/WorkTimePage.qml:73
 #, kde-format
 msgid "Pause (minutes)"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:100
+#: src/qml/WorkTimePage.qml:84
 #, kde-format
 msgid "Target time (hours:minutes)"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:114
+#: src/qml/WorkTimePage.qml:96
 #, kde-format
 msgid "Working end"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:122
+#: src/qml/WorkTimePage.qml:104
 #, kde-format
 msgid "Result"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:130
+#: src/qml/WorkTimePage.qml:112
 #, kde-format
 msgid "Clocked pauses"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:163
+#: src/qml/WorkTimePage.qml:135
 #, kde-format
 msgctxt "%1 is the number of the pause"
 msgid "Pause %1 began"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:171 src/qml/WorkTimePage.qml:183
+#: src/qml/WorkTimePage.qml:142 src/qml/WorkTimePage.qml:149
 #, kde-format
 msgctxt "%1 is the number of the pause"
 msgid "Pause %1 ended"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:184
+#: src/qml/WorkTimePage.qml:150
 #, kde-format
 msgid "Still running"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:188
+#: src/qml/WorkTimePage.qml:154
 #, kde-format
 msgctxt "%1 is the number of the pause"
 msgid "Remove Pause %1"
 msgstr ""
 
-#: src/qml/WorkTimePage.qml:198
+#: src/qml/WorkTimePage.qml:164
 #, kde-format
 msgid "Add Pause"
 msgstr ""
