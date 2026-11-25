@@ -3,7 +3,34 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-project(istar-countdown VERSION 0.1.0 LANGUAGES CXX)
+project(istar-countdown VERSION 0.1 LANGUAGES CXX)
+
+# The third number is the git height: the commits since the line above last changed, as Nerdbank.GitVersioning
+# counts it for the .NET projects. Scripts/rpm.py counts the same way, so the package and the About page agree;
+# a new minor or major is a change of that line and starts the count at 0 again.
+find_package(Git QUIET)
+set(VERSION_HEIGHT 0)
+if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
+    execute_process(COMMAND "${GIT_EXECUTABLE}" log -1 --format=%H -G "project\\(.*VERSION" -- CMakeLists.txt
+                    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE VERSION_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if(VERSION_COMMIT)
+        set(VERSION_RANGE "${VERSION_COMMIT}..HEAD")
+    else()
+        set(VERSION_RANGE HEAD)
+    endif()
+    execute_process(COMMAND "${GIT_EXECUTABLE}" rev-list --count ${VERSION_RANGE}
+                    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE VERSION_HEIGHT OUTPUT_STRIP_TRAILING_WHITESPACE)
+    # Every commit writes HEAD's reflog, so a build after one configures again and carries the new number.
+    execute_process(COMMAND "${GIT_EXECUTABLE}" rev-parse --path-format=absolute --git-path logs/HEAD
+                    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE HEAD_LOG OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if(EXISTS "${HEAD_LOG}")
+        set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${HEAD_LOG}")
+    endif()
+endif()
+set(PROJECT_VERSION_PATCH ${VERSION_HEIGHT})
+set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${VERSION_HEIGHT}")
+set(${PROJECT_NAME}_VERSION "${PROJECT_VERSION}")
+message(STATUS "Version ${PROJECT_VERSION}")
 
 set(QT_MIN_VERSION 6.7.0)
 set(KF_MIN_VERSION 6.0.0)
