@@ -16,6 +16,7 @@ qt_add_qml_module(istar-countdown
         qml/CountdownsPage.qml
         qml/GradientText.qml
         qml/Main.qml
+        qml/TimeField.qml
         qml/TimerPage.qml
         qml/WorkTimePage.qml
     SOURCES
@@ -78,11 +79,14 @@ else()
         appointment-new
         chronometer
         chronometer-pause
+        chronometer-reset
         chronometer-start
         document-edit
         edit-delete
         help-about
         list-add
+        media-playback-pause
+        media-playback-start
         view-calendar
         view-calendar-birthday
         view-calendar-day

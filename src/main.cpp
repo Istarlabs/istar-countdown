@@ -21,6 +21,8 @@
 #include <KWindowSystem>
 
 #include <QApplication>
+#include <QDBusConnection>
+#include <QDBusMessage>
 #include <QPainter>
 #include <QPixmap>
 
@@ -61,9 +63,24 @@ namespace
         return QIcon(pixmap);
     }
 
+    /// Sets the progress bar on this program's task manager entry. Plasma listens for the Unity launcher
+    /// API, so this works minimized too and needs no KDE library.
+    void publishProgress(double progress, bool visible)
+    {
+        QDBusMessage message = QDBusMessage::createSignal(u"/net/kurokyuu/istar_countdown"_s,
+                                                          u"com.canonical.Unity.LauncherEntry"_s, u"Update"_s);
+
+        message << u"application://net.kurokyuu.istar-countdown.desktop"_s
+                << QVariantMap{{u"progress"_s, progress}, {u"progress-visible"_s, visible}};
+        QDBusConnection::sessionBus().send(message);
+    }
+
     /// The tray icon: closing the window leaves the program running there, a click brings the window back,
-    /// and while a countdown runs the icon shows how much of it is left.
-    void addTrayIcon(QQuickWindow* window, const IstarCountdown::CountdownTimer* timer)
+    /// and while a countdown runs the icon and the task manager entry show how much of it is left. There is
+    /// one of each for both timers, so the working-time countdown has them while it runs: it is the one
+    /// that runs all day.
+    void addTrayIcon(QQuickWindow* window, const IstarCountdown::CountdownTimer* mainTimer,
+                     const IstarCountdown::CountdownTimer* workTimer)
     {
         auto* tray = new KStatusNotifierItem(window);
 
@@ -78,20 +95,23 @@ namespace
         // second launch brings back; ask the tray whether it is shown if that ever comes up.
         QGuiApplication::setQuitOnLastWindowClosed(false);
 
-        if (timer == nullptr)
+        if (mainTimer == nullptr || workTimer == nullptr)
         {
             return;
         }
 
         // The icon goes over D-Bus as a pixmap, so it is redrawn per whole percent, not every second.
         auto shownPercent = std::make_shared<int>(-1);
-        const auto refresh = [tray, timer, shownPercent]
+        const auto refresh = [tray, mainTimer, workTimer, shownPercent]
         {
+            const auto* timer = workTimer->running() ? workTimer : mainTimer;
+
             if (!timer->running())
             {
                 *shownPercent = -1;
                 tray->setIconByName(u"chronometer"_s);
                 tray->setToolTip(u"chronometer"_s, i18n("Istar Countdown"), {});
+                publishProgress(0, false);
                 return;
             }
 
@@ -104,10 +124,14 @@ namespace
             }
 
             tray->setToolTip(u"chronometer"_s, i18n("Istar Countdown"), timer->text());
+            publishProgress(left, true);
         };
 
-        QObject::connect(timer, &IstarCountdown::CountdownTimer::textChanged, tray, refresh);
-        QObject::connect(timer, &IstarCountdown::CountdownTimer::runningChanged, tray, refresh);
+        for (const auto* timer : {mainTimer, workTimer})
+        {
+            QObject::connect(timer, &IstarCountdown::CountdownTimer::textChanged, tray, refresh);
+            QObject::connect(timer, &IstarCountdown::CountdownTimer::runningChanged, tray, refresh);
+        }
     }
 
     /// A notification when a countdown is over; clicking it brings the window back, from the tray too.
@@ -208,13 +232,17 @@ int main(int argc, char* argv[])
 #ifndef Q_OS_ANDROID
     if (auto* window = qobject_cast<QQuickWindow*>(engine.rootObjects().first()))
     {
-        const auto* timer = window->findChild<IstarCountdown::CountdownTimer*>(u"mainTimer"_s);
+        const auto* mainTimer = window->findChild<IstarCountdown::CountdownTimer*>(u"mainTimer"_s);
+        const auto* workTimer = window->findChild<IstarCountdown::CountdownTimer*>(u"workTimer"_s);
 
-        addTrayIcon(window, timer);
+        addTrayIcon(window, mainTimer, workTimer);
 
-        if (timer != nullptr)
+        for (const auto* timer : {mainTimer, workTimer})
         {
-            notifyWhenFinished(window, timer);
+            if (timer != nullptr)
+            {
+                notifyWhenFinished(window, timer);
+            }
         }
 
         QObject::connect(&service, &KDBusService::activateRequested, window,

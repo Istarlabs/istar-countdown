@@ -53,12 +53,12 @@ Kirigami.ScrollablePage {
         FormCard.FormCard {
             Layout.fillWidth: true
 
-            FormCard.FormDateTimeDelegate {
+            TimeField {
                 id: untilField
 
-                text: i18n("Count down until")
-                dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
+                label: i18n("Count down until")
                 value: new Date()
+                onEdited: time => value = time
             }
 
             FormCard.FormDelegateSeparator {}

@@ -15,7 +15,8 @@ namespace IstarCountdown
     /// "03:25:09", or "2 days 03:25:09" from a day up. Negative input reads as zero.
     QString formatRemaining(qint64 seconds);
 
-    /// The big ticking text. Its finished message and gradient are kept in the settings file.
+    /// The big ticking text. Its finished message and gradient are kept in the settings file, in a group per
+    /// timer, so the working-time countdown does not take over the message of the last event counted down to.
     class CountdownTimer : public QObject
     {
         Q_OBJECT
@@ -26,6 +27,7 @@ namespace IstarCountdown
         Q_PROPERTY(QString finishedText READ finishedText WRITE setFinishedText NOTIFY finishedTextChanged)
         Q_PROPERTY(QColor startColor READ startColor WRITE setStartColor NOTIFY startColorChanged)
         Q_PROPERTY(QColor endColor READ endColor WRITE setEndColor NOTIFY endColorChanged)
+        Q_PROPERTY(QString settingsGroup READ settingsGroup WRITE setSettingsGroup NOTIFY settingsGroupChanged)
 
     public:
         explicit CountdownTimer(QObject* parent = nullptr);
@@ -36,12 +38,16 @@ namespace IstarCountdown
         [[nodiscard]] QColor startColor() const;
         [[nodiscard]] QColor endColor() const;
 
+        /// The settings group the message and the gradient are read from and kept in; "Timer" by default.
+        [[nodiscard]] QString settingsGroup() const;
+
         /// The share of the running countdown that is left, from 1 at the start down to 0.
         [[nodiscard]] double progress() const;
 
         void setFinishedText(const QString& text);
         void setStartColor(const QColor& color);
         void setEndColor(const QColor& color);
+        void setSettingsGroup(const QString& group);
 
         /// Counts down to the next occurrence of a saved countdown, and shows its message at the end.
         Q_INVOKABLE void startCountdown(const QDateTime& start, int occurrence, const QString& message);
@@ -58,6 +64,7 @@ namespace IstarCountdown
         void finishedTextChanged();
         void startColorChanged();
         void endColorChanged();
+        void settingsGroupChanged();
 
         /// A countdown that was running has reached its end; not sent for one that was over when it started.
         void finished();
@@ -65,6 +72,7 @@ namespace IstarCountdown
     private:
         void tick();
         void setText(const QString& text);
+        void load();
 
         QTimer m_ticker;
         QDateTime m_start;
@@ -73,5 +81,6 @@ namespace IstarCountdown
         QString m_finishedText;
         QColor m_startColor;
         QColor m_endColor;
+        QString m_settingsGroup = QStringLiteral("Timer");
     };
 } // namespace IstarCountdown

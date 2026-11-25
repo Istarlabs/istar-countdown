@@ -13,45 +13,26 @@
 
 #include <algorithm>
 
-#ifndef Q_OS_ANDROID
-#include <QDBusConnection>
-#include <QDBusMessage>
-#endif
-
 using namespace Qt::StringLiterals;
 
 namespace
 {
-    /// Sets the progress bar on this program's task manager entry. Plasma listens for the Unity launcher
-    /// API, so this works minimized too and needs no KDE library.
-    void publishProgress([[maybe_unused]] double progress, [[maybe_unused]] bool visible)
-    {
-#ifndef Q_OS_ANDROID
-        QDBusMessage message = QDBusMessage::createSignal(u"/net/kurokyuu/istar_countdown"_s,
-                                                          u"com.canonical.Unity.LauncherEntry"_s, u"Update"_s);
-
-        message << u"application://net.kurokyuu.istar-countdown.desktop"_s
-                << QVariantMap{{u"progress"_s, progress}, {u"progress-visible"_s, visible}};
-        QDBusConnection::sessionBus().send(message);
-#endif
-    }
-
     constexpr qint64 SecondsPerDay = 24LL * 60 * 60;
 
     constexpr auto FinishedTextKey = "FinishedText"_L1;
     constexpr auto StartColorKey = "StartColor"_L1;
     constexpr auto EndColorKey = "EndColor"_L1;
 
-    /// The [Timer] group of ~/.config/istar-countdownrc.
-    KConfigGroup settings()
+    /// A group of ~/.config/istar-countdownrc, [Timer] unless the timer was given another.
+    KConfigGroup settings(const QString& group)
     {
-        return KSharedConfig::openConfig()->group(u"Timer"_s);
+        return KSharedConfig::openConfig()->group(group);
     }
 
     template <typename Value>
-    void remember(QLatin1StringView key, const Value& value)
+    void remember(const QString& groupName, QLatin1StringView key, const Value& value)
     {
-        KConfigGroup group = settings();
+        KConfigGroup group = settings(groupName);
 
         group.writeEntry(key, value);
         group.sync();
@@ -78,15 +59,29 @@ namespace IstarCountdown
 
     CountdownTimer::CountdownTimer(QObject* parent) : QObject(parent), m_text(formatRemaining(0))
     {
-        const KConfigGroup group = settings();
-
-        // The defaults are the colours and the message the WinUI version shipped with.
-        m_finishedText = group.readEntry(FinishedTextKey, i18n("Let's go!"));
-        m_startColor = group.readEntry(StartColorKey, QColor(0x3C, 0xA1, 0xDD));
-        m_endColor = group.readEntry(EndColorKey, QColor(0x6B, 0x8C, 0xDF));
-
+        load();
         m_ticker.setInterval(1000);
         connect(&m_ticker, &QTimer::timeout, this, &CountdownTimer::tick);
+    }
+
+    QString CountdownTimer::settingsGroup() const
+    {
+        return m_settingsGroup;
+    }
+
+    void CountdownTimer::setSettingsGroup(const QString& group)
+    {
+        if (group == m_settingsGroup)
+        {
+            return;
+        }
+
+        m_settingsGroup = group;
+        load();
+        Q_EMIT settingsGroupChanged();
+        Q_EMIT finishedTextChanged();
+        Q_EMIT startColorChanged();
+        Q_EMIT endColorChanged();
     }
 
     QString CountdownTimer::text() const
@@ -136,7 +131,7 @@ namespace IstarCountdown
         }
 
         m_finishedText = text;
-        remember(FinishedTextKey, text);
+        remember(m_settingsGroup, FinishedTextKey, text);
         Q_EMIT finishedTextChanged();
     }
 
@@ -148,7 +143,7 @@ namespace IstarCountdown
         }
 
         m_startColor = color;
-        remember(StartColorKey, color);
+        remember(m_settingsGroup, StartColorKey, color);
         Q_EMIT startColorChanged();
     }
 
@@ -160,7 +155,7 @@ namespace IstarCountdown
         }
 
         m_endColor = color;
-        remember(EndColorKey, color);
+        remember(m_settingsGroup, EndColorKey, color);
         Q_EMIT endColorChanged();
     }
 
@@ -190,7 +185,6 @@ namespace IstarCountdown
         }
 
         m_ticker.stop();
-        publishProgress(0, false);
         Q_EMIT runningChanged();
     }
 
@@ -213,7 +207,16 @@ namespace IstarCountdown
         }
 
         setText(formatRemaining(remaining));
-        publishProgress(progress(), true);
+    }
+
+    void CountdownTimer::load()
+    {
+        const KConfigGroup group = settings(m_settingsGroup);
+
+        // The defaults are the colours and the message the WinUI version shipped with.
+        m_finishedText = group.readEntry(FinishedTextKey, i18n("Let's go!"));
+        m_startColor = group.readEntry(StartColorKey, QColor(0x3C, 0xA1, 0xDD));
+        m_endColor = group.readEntry(EndColorKey, QColor(0x6B, 0x8C, 0xDF));
     }
 
     void CountdownTimer::setText(const QString& text)
