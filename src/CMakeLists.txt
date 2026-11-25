@@ -78,11 +78,14 @@ else()
         appointment-new
         chronometer
         chronometer-pause
+        chronometer-reset
         chronometer-start
         document-edit
         edit-delete
         help-about
         list-add
+        media-playback-pause
+        media-playback-start
         view-calendar
         view-calendar-birthday
         view-calendar-day

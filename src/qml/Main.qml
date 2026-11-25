@@ -27,8 +27,37 @@ Kirigami.ApplicationWindow {
         objectName: "mainTimer"
     }
 
+    // The working day's own countdown, so counting down to its end leaves a running event countdown alone.
+    CountdownTimer {
+        id: workTimer
+        // main.cpp finds it by this name for the tray icon.
+        objectName: "workTimer"
+        settingsGroup: "WorkTimer"
+    }
+
     WorkTime {
         id: mainWorkTime
+
+        // Kept here, not on the page, so it holds while another page is shown.
+        property bool resumeAfterPause: false
+
+        // The countdown holds during a pause and goes on to the end the pause has moved.
+        onPausedChanged: {
+            if (paused) {
+                resumeAfterPause = workTimer.running;
+                workTimer.stop();
+            } else if (resumeAfterPause) {
+                resumeAfterPause = false;
+                workTimer.startAt(endTarget(), startTarget());
+            }
+        }
+
+        // A changed start, pause or target moves a countdown that is already running.
+        onEndChanged: {
+            if (workTimer.running) {
+                workTimer.startAt(endTarget(), startTarget());
+            }
+        }
     }
 
     function showCountdowns() {
@@ -52,11 +81,10 @@ Kirigami.ApplicationWindow {
     function showWorkTime() {
         currentPage = "worktime";
         pageStack.clear();
-        const page = pageStack.push(Qt.resolvedUrl("WorkTimePage.qml"), {
+        pageStack.push(Qt.resolvedUrl("WorkTimePage.qml"), {
             workTime: mainWorkTime,
-            countdownTimer: mainTimer
+            countdownTimer: workTimer
         });
-        page.timerStarted.connect(showTimer);
     }
 
     // A page of the stack like the others, not a dialog layer: a layer covers the drawer, so on a phone

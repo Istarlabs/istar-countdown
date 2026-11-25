@@ -11,20 +11,33 @@ Kirigami.ScrollablePage {
     id: page
 
     required property WorkTime workTime
+    // The working day's own timer, not the one of the Timer page.
     required property CountdownTimer countdownTimer
-
-    signal timerStarted
 
     title: i18n("Working Time")
 
     actions: [
         Kirigami.Action {
+            text: i18n("Clock In")
+            icon.name: "chronometer-reset"
+            onTriggered: page.workTime.clockIn()
+        },
+        Kirigami.Action {
+            text: page.workTime.paused ? i18n("End Pause") : i18n("Begin Pause")
+            icon.name: page.workTime.paused ? "media-playback-start" : "media-playback-pause"
+            onTriggered: page.workTime.togglePause()
+        },
+        Kirigami.Action {
             text: i18n("Count Down to the End")
             icon.name: "chronometer-start"
-            onTriggered: {
-                page.countdownTimer.startAt(page.workTime.endTarget(), page.workTime.startTarget());
-                page.timerStarted();
-            }
+            visible: !page.countdownTimer.running && !page.workTime.paused
+            onTriggered: page.countdownTimer.startAt(page.workTime.endTarget(), page.workTime.startTarget())
+        },
+        Kirigami.Action {
+            text: i18n("Stop")
+            icon.name: "chronometer-pause"
+            visible: page.countdownTimer.running
+            onTriggered: page.countdownTimer.stop()
         }
     ]
 
@@ -46,53 +59,77 @@ Kirigami.ScrollablePage {
         return i18nc("a length of time as hours:minutes", "%1:%2", Math.floor(minutes / 60), String(minutes % 60).padStart(2, "0"));
     }
 
-    FormCard.FormCard {
-        FormCard.FormDateTimeDelegate {
-            id: startField
+    ColumnLayout {
+        spacing: Kirigami.Units.gridUnit
 
-            text: i18n("Working start")
-            dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
-            onValueChanged: page.workTime.start = value
+        GradientText {
+            Layout.fillWidth: true
+            Layout.preferredHeight: Kirigami.Units.gridUnit * 6
+            text: page.workTime.paused ? i18n("Pause") : page.countdownTimer.text
+            startColor: page.countdownTimer.startColor
+            endColor: page.countdownTimer.endColor
+            font.pixelSize: Kirigami.Units.gridUnit * 3
+            font.bold: true
         }
 
-        FormCard.FormDelegateSeparator {}
+        FormCard.FormCard {
+            Layout.fillWidth: true
 
-        FormCard.FormSpinBoxDelegate {
-            label: i18n("Pause (minutes)")
-            from: 0
-            to: 180
-            stepSize: 15
-            value: page.workTime.pauseMinutes
-            onValueChanged: page.workTime.pauseMinutes = value
-        }
+            FormCard.FormDateTimeDelegate {
+                id: startField
 
-        FormCard.FormDelegateSeparator {}
+                text: i18n("Working start")
+                dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
+                onValueChanged: page.workTime.start = value
+            }
 
-        FormCard.FormSpinBoxDelegate {
-            label: i18n("Target time (hours:minutes)")
-            from: 0
-            to: 600
-            stepSize: 15
-            value: page.workTime.targetMinutes
-            textFromValue: (value, locale) => page.hoursAndMinutes(value)
-            onValueChanged: page.workTime.targetMinutes = value
-        }
+            FormCard.FormDelegateSeparator {}
 
-        FormCard.FormDelegateSeparator {}
+            FormCard.FormSpinBoxDelegate {
+                label: i18n("Pause (minutes)")
+                from: 0
+                to: 180
+                stepSize: 15
+                value: page.workTime.pauseMinutes
+                onValueChanged: page.workTime.pauseMinutes = value
+            }
 
-        FormCard.FormDateTimeDelegate {
-            id: endField
+            FormCard.FormDelegateSeparator {}
 
-            text: i18n("Working end")
-            dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
-            onValueChanged: page.workTime.end = value
-        }
+            // The fixed pause is always deducted; clocked pauses only count for what goes beyond it.
+            FormCard.FormTextDelegate {
+                text: i18n("Clocked pauses")
+                description: page.workTime.pausesText
+            }
 
-        FormCard.FormDelegateSeparator {}
+            FormCard.FormDelegateSeparator {}
 
-        FormCard.FormTextDelegate {
-            text: i18n("Result")
-            description: page.workTime.resultText
+            FormCard.FormSpinBoxDelegate {
+                label: i18n("Target time (hours:minutes)")
+                from: 0
+                to: 600
+                stepSize: 15
+                value: page.workTime.targetMinutes
+                textFromValue: (value, locale) => page.hoursAndMinutes(value)
+                onValueChanged: page.workTime.targetMinutes = value
+            }
+
+            FormCard.FormDelegateSeparator {}
+
+            FormCard.FormDateTimeDelegate {
+                id: endField
+
+                text: i18n("Working end")
+                dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
+                onValueChanged: page.workTime.end = value
+            }
+
+            FormCard.FormDelegateSeparator {}
+
+            FormCard.FormTextDelegate {
+                text: i18n("Result")
+                description: page.workTime.resultText
+            }
         }
     }
 }

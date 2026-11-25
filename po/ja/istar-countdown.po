@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: istar-countdown\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-16 17:48+0100\n"
+"POT-Creation-Date: 2026-11-17 01:40+0100\n"
 "PO-Revision-Date: 2026-11-01 17:30+0100\n"
 "Last-Translator: Pascal Klose <istarlabs_dev@proton.me>\n"
 "Language-Team: Japanese\n"
@@ -18,34 +18,34 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. i18n: %1 is a number of days, %2 the remaining time of day as hh:mm:ss
-#: src/countdowntimer.cpp:76
+#: src/countdowntimer.cpp:57
 #, kde-format
 msgid "%1 day %2"
 msgid_plural "%1 days %2"
 msgstr[0] "%1日 %2"
 
-#: src/countdowntimer.cpp:84 src/qml/CountdownDialog.qml:22
+#: src/countdowntimer.cpp:217 src/qml/CountdownDialog.qml:22
 #, kde-format
 msgid "Let's go!"
 msgstr "始めましょう！"
 
-#: src/main.cpp:70 src/main.cpp:75 src/main.cpp:94 src/main.cpp:106
-#: src/main.cpp:156 src/qml/Main.qml:13
+#: src/main.cpp:87 src/main.cpp:92 src/main.cpp:113 src/main.cpp:126
+#: src/main.cpp:180 src/qml/Main.qml:13
 #, kde-format
 msgid "Istar Countdown"
 msgstr "Istar Countdown"
 
-#: src/main.cpp:122
+#: src/main.cpp:146
 #, kde-format
 msgid "Countdown finished"
 msgstr "カウントダウン終了"
 
-#: src/main.cpp:126
+#: src/main.cpp:150
 #, kde-format
 msgid "Show"
 msgstr "表示"
 
-#: src/main.cpp:157
+#: src/main.cpp:181
 #, kde-format
 msgid "Countdowns, a timer and a working-time calculator"
 msgstr "カウントダウン、タイマー、勤務時間の計算"
@@ -110,7 +110,7 @@ msgstr "繰り返し"
 msgid "Message when it is over"
 msgstr "終了時のメッセージ"
 
-#: src/qml/CountdownsPage.qml:17 src/qml/Main.qml:74
+#: src/qml/CountdownsPage.qml:17 src/qml/Main.qml:102
 #, kde-format
 msgid "Countdowns"
 msgstr "カウントダウン"
@@ -152,22 +152,22 @@ msgid ""
 "Do you really want to remove the selected item from your countdown list?"
 msgstr "選択した項目をカウントダウンの一覧から削除してもよろしいですか？"
 
-#: src/qml/Main.qml:80 src/qml/TimerPage.qml:16
+#: src/qml/Main.qml:108 src/qml/TimerPage.qml:16
 #, kde-format
 msgid "Timer"
 msgstr "タイマー"
 
-#: src/qml/Main.qml:86 src/qml/WorkTimePage.qml:18
+#: src/qml/Main.qml:114 src/qml/WorkTimePage.qml:17
 #, kde-format
 msgid "Working Time"
 msgstr "勤務時間"
 
-#: src/qml/Main.qml:92
+#: src/qml/Main.qml:120
 #, kde-format
 msgid "About Istar Countdown"
 msgstr "Istar Countdown について"
 
-#: src/qml/TimerPage.qml:20
+#: src/qml/TimerPage.qml:20 src/qml/WorkTimePage.qml:37
 #, kde-format
 msgid "Stop"
 msgstr "停止"
@@ -187,48 +187,93 @@ msgstr "グラデーションの開始色"
 msgid "Gradient end"
 msgstr "グラデーションの終了色"
 
-#: src/qml/WorkTimePage.qml:22
+#: src/qml/WorkTimePage.qml:21
+#, kde-format
+msgid "Clock In"
+msgstr "出勤"
+
+#: src/qml/WorkTimePage.qml:26
+#, kde-format
+msgid "Begin Pause"
+msgstr "休憩開始"
+
+#: src/qml/WorkTimePage.qml:26
+#, kde-format
+msgid "End Pause"
+msgstr "休憩終了"
+
+#: src/qml/WorkTimePage.qml:31
 #, kde-format
 msgid "Count Down to the End"
 msgstr "終了時刻までカウントダウン"
 
-#: src/qml/WorkTimePage.qml:46
+#: src/qml/WorkTimePage.qml:59
 #, kde-format
 msgctxt "a length of time as hours:minutes"
 msgid "%1:%2"
 msgstr "%1:%2"
 
-#: src/qml/WorkTimePage.qml:53
+#: src/qml/WorkTimePage.qml:68
+#, kde-format
+msgid "Pause"
+msgstr "休憩中"
+
+#: src/qml/WorkTimePage.qml:81
 #, kde-format
 msgid "Working start"
 msgstr "勤務開始"
 
-#: src/qml/WorkTimePage.qml:61
+#: src/qml/WorkTimePage.qml:89
 #, kde-format
 msgid "Pause (minutes)"
 msgstr "休憩（分）"
 
-#: src/qml/WorkTimePage.qml:72
+#: src/qml/WorkTimePage.qml:101
+#, kde-format
+msgid "Clocked pauses"
+msgstr "打刻した休憩"
+
+#: src/qml/WorkTimePage.qml:108
 #, kde-format
 msgid "Target time (hours:minutes)"
 msgstr "目標時間（時:分）"
 
-#: src/qml/WorkTimePage.qml:86
+#: src/qml/WorkTimePage.qml:122
 #, kde-format
 msgid "Working end"
 msgstr "勤務終了"
 
-#: src/qml/WorkTimePage.qml:94
+#: src/qml/WorkTimePage.qml:130
 #, kde-format
 msgid "Result"
 msgstr "結果"
 
 #. i18n: %1 is the hours and %2 the minutes of the time worked, e.g. "7 h 45 min"
-#: src/worktime.cpp:88
+#: src/worktime.cpp:124
 #, kde-format
 msgctxt "worked time"
 msgid "%1 h %2 min"
 msgstr "%1時間%2分"
+
+#. i18n: a clocked pause, %1 is when it began and %2 when it ended
+#: src/worktime.cpp:146
+#, kde-format
+msgctxt "clocked pause"
+msgid "%1 – %2"
+msgstr "%1～%2"
+
+#. i18n: a pause that is still running, %1 is when it began
+#: src/worktime.cpp:151
+#, kde-format
+msgctxt "running pause"
+msgid "since %1"
+msgstr "%1から"
+
+#: src/worktime.cpp:157
+#, kde-format
+msgctxt "no clocked pauses"
+msgid "None"
+msgstr "なし"
 
 #, kde-format
 #~ msgid "Save"
