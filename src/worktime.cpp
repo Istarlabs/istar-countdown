@@ -7,7 +7,6 @@
 #include <KLocalizedString>
 #include <KSharedConfig>
 
-#include <QLocale>
 #include <QStringList>
 
 using namespace Qt::StringLiterals;
@@ -65,9 +64,10 @@ namespace IstarCountdown
     {
         qint64 seconds = 0;
 
+        // An end set before its begin while correcting a pause counts as nothing, not as time worked.
         for (qsizetype index = 0; index + 1 < stamps.size(); index += 2)
         {
-            seconds += stamps.at(index).secsTo(stamps.at(index + 1));
+            seconds += qMax<qint64>(stamps.at(index).secsTo(stamps.at(index + 1)), 0);
         }
 
         return static_cast<int>(seconds / 60);
@@ -129,35 +129,58 @@ namespace IstarCountdown
         return m_pauseStamps.size() % 2 == 1;
     }
 
-    QString WorkTime::pausesText() const
+    QVariantList WorkTime::pauseStamps() const
     {
-        const QLocale locale;
-        QStringList pauses;
+        QVariantList stamps;
 
-        for (qsizetype index = 0; index < m_pauseStamps.size(); index += 2)
+        for (const QDateTime& stamp : m_pauseStamps)
         {
-            const QString begin = locale.toString(m_pauseStamps.at(index).time(), QLocale::ShortFormat);
-
-            if (index + 1 < m_pauseStamps.size())
-            {
-                const QString end = locale.toString(m_pauseStamps.at(index + 1).time(), QLocale::ShortFormat);
-
-                // i18n: a clocked pause, %1 is when it began and %2 when it ended
-                pauses.append(i18nc("clocked pause", "%1 – %2", begin, end));
-            }
-            else
-            {
-                // i18n: a pause that is still running, %1 is when it began
-                pauses.append(i18nc("running pause", "since %1", begin));
-            }
+            stamps.append(stamp);
         }
 
-        if (pauses.isEmpty())
+        return stamps;
+    }
+
+    void WorkTime::addPause()
+    {
+        const QDateTime now = wholeMinute(QDateTime::currentDateTime());
+
+        // A running pause has to stay the last stamp, or begins and ends would swap places.
+        m_pauseStamps.insert(m_pauseStamps.size() - (paused() ? 1 : 0), 2, now);
+        pausesEdited();
+    }
+
+    void WorkTime::setPauseStamp(int index, const QDateTime& stamp)
+    {
+        const QDateTime value = wholeMinute(stamp);
+
+        if (index < 0 || index >= m_pauseStamps.size() || m_pauseStamps.at(index) == value)
         {
-            return i18nc("no clocked pauses", "None");
+            return;
         }
 
-        return pauses.join(u", "_s);
+        m_pauseStamps.replace(index, value);
+        pausesEdited();
+    }
+
+    void WorkTime::removePause(int pause)
+    {
+        const qsizetype begin = static_cast<qsizetype>(pause) * 2;
+
+        if (pause < 0 || begin >= m_pauseStamps.size())
+        {
+            return;
+        }
+
+        m_pauseStamps.remove(begin, qMin<qsizetype>(2, m_pauseStamps.size() - begin));
+        pausesEdited();
+    }
+
+    void WorkTime::pausesEdited()
+    {
+        rememberDay();
+        recalculateEnd();
+        Q_EMIT pausesChanged();
     }
 
     void WorkTime::setStart(const QDateTime& start)

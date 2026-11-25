@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QString>
 #include <QTime>
+#include <QVariantList>
 #include <QtQmlIntegration>
 
 namespace IstarCountdown
@@ -41,7 +42,8 @@ namespace IstarCountdown
         Q_PROPERTY(int targetMinutes READ targetMinutes WRITE setTargetMinutes NOTIFY targetMinutesChanged)
         Q_PROPERTY(QString resultText READ resultText NOTIFY resultTextChanged)
         Q_PROPERTY(bool paused READ paused NOTIFY pausesChanged)
-        Q_PROPERTY(QString pausesText READ pausesText NOTIFY pausesChanged)
+        /// Begin, end, begin, ... as dates; a running pause has no end yet.
+        Q_PROPERTY(QVariantList pauseStamps READ pauseStamps NOTIFY pausesChanged)
 
     public:
         explicit WorkTime(QObject* parent = nullptr);
@@ -52,9 +54,7 @@ namespace IstarCountdown
         [[nodiscard]] int targetMinutes() const;
         [[nodiscard]] QString resultText() const;
         [[nodiscard]] bool paused() const;
-
-        /// "11:00 – 13:00, since 14:10", or "None".
-        [[nodiscard]] QString pausesText() const;
+        [[nodiscard]] QVariantList pauseStamps() const;
 
         void setStart(const QDateTime& start);
         void setEnd(const QDateTime& end);
@@ -66,6 +66,15 @@ namespace IstarCountdown
 
         /// Begins a pause now, or ends the running one; the end moves by what the pause adds.
         Q_INVOKABLE void togglePause();
+
+        /// A pause entered afterwards, from now to now, to be set to the real times; it goes before a running one.
+        Q_INVOKABLE void addPause();
+
+        /// Corrects one stamp of pauseStamps, a begin at an even index and an end at an odd one.
+        Q_INVOKABLE void setPauseStamp(int index, const QDateTime& stamp);
+
+        /// Removes the pause whose begin is at pauseStamps[2 * pause], with its end.
+        Q_INVOKABLE void removePause(int pause);
 
         /// The next moment the day ends at the shown time, for the timer to count down to.
         [[nodiscard]] Q_INVOKABLE QDateTime endTarget() const;
@@ -85,6 +94,7 @@ namespace IstarCountdown
     private:
         void recalculateEnd();
         void rememberDay() const;
+        void pausesEdited();
         [[nodiscard]] int pauseToDeduct() const;
 
         QDateTime m_start;

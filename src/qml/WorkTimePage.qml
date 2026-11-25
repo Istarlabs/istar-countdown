@@ -96,14 +96,6 @@ Kirigami.ScrollablePage {
 
             FormCard.FormDelegateSeparator {}
 
-            // The fixed pause is always deducted; clocked pauses only count for what goes beyond it.
-            FormCard.FormTextDelegate {
-                text: i18n("Clocked pauses")
-                description: page.workTime.pausesText
-            }
-
-            FormCard.FormDelegateSeparator {}
-
             FormCard.FormSpinBoxDelegate {
                 label: i18n("Target time (hours:minutes)")
                 from: 0
@@ -129,6 +121,83 @@ Kirigami.ScrollablePage {
             FormCard.FormTextDelegate {
                 text: i18n("Result")
                 description: page.workTime.resultText
+            }
+        }
+
+        // The fixed pause above is always deducted; clocked pauses only count for what goes beyond it.
+        FormCard.FormHeader {
+            Layout.fillWidth: true
+            title: i18n("Clocked pauses")
+        }
+
+        FormCard.FormCard {
+            Layout.fillWidth: true
+
+            Repeater {
+                // A new array on every change, so the delegates are rebuilt from the model: a picker writes its
+                // own value and would no longer follow a binding.
+                model: {
+                    const stamps = page.workTime.pauseStamps;
+                    const pauses = [];
+
+                    for (let index = 0; index < stamps.length; index += 2) {
+                        pauses.push({
+                            begin: stamps[index],
+                            end: index + 1 < stamps.length ? stamps[index + 1] : null
+                        });
+                    }
+
+                    return pauses;
+                }
+
+                delegate: ColumnLayout {
+                    id: pause
+
+                    required property var modelData
+                    required property int index
+
+                    Layout.fillWidth: true
+                    spacing: 0
+
+                    FormCard.FormDateTimeDelegate {
+                        text: i18nc("%1 is the number of the pause", "Pause %1 began", pause.index + 1)
+                        dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
+                        value: pause.modelData.begin
+                        onValueChanged: page.workTime.setPauseStamp(pause.index * 2, value)
+                    }
+
+                    FormCard.FormDateTimeDelegate {
+                        visible: pause.modelData.end !== null
+                        text: i18nc("%1 is the number of the pause", "Pause %1 ended", pause.index + 1)
+                        dateTimeDisplay: FormCard.FormDateTimeDelegate.DateTimeDisplay.Time
+                        value: pause.modelData.end ?? new Date()
+                        onValueChanged: {
+                            if (pause.modelData.end !== null) {
+                                page.workTime.setPauseStamp(pause.index * 2 + 1, value);
+                            }
+                        }
+                    }
+
+                    FormCard.FormTextDelegate {
+                        visible: pause.modelData.end === null
+                        text: i18nc("%1 is the number of the pause", "Pause %1 ended", pause.index + 1)
+                        description: i18n("Still running")
+                    }
+
+                    FormCard.FormButtonDelegate {
+                        text: i18nc("%1 is the number of the pause", "Remove Pause %1", pause.index + 1)
+                        icon.name: "edit-delete"
+                        onClicked: page.workTime.removePause(pause.index)
+                    }
+
+                    FormCard.FormDelegateSeparator {}
+                }
+            }
+
+            FormCard.FormButtonDelegate {
+                text: i18n("Add Pause")
+                icon.name: "list-add"
+                onClicked: page.workTime.addPause()
             }
         }
     }

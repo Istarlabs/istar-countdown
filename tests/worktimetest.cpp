@@ -40,6 +40,32 @@ private Q_SLOTS:
         QCOMPARE(clockedMinutes({{today, QTime(23, 30)}, {today.addDays(1), QTime(0, 15)}}), 45);
     }
 
+    void pausesEnteredAfterwardsMoveTheEnd()
+    {
+        WorkTime day;
+        const QDate today = QDate::currentDate();
+
+        day.clockIn();
+        day.setStart({today, QTime(8, 0)});
+        day.setPauseMinutes(45);
+        day.setTargetMinutes(465);
+        QCOMPARE(day.end().time(), QTime(16, 30));
+
+        day.addPause();
+        day.setPauseStamp(0, {today, QTime(11, 0)});
+        day.setPauseStamp(1, {today, QTime(13, 0)});
+        QCOMPARE(day.end().time(), QTime(17, 45));
+
+        // An end before its begin while typing counts as no pause, so only the fixed one is left.
+        day.setPauseStamp(1, {today, QTime(10, 0)});
+        QCOMPARE(day.end().time(), QTime(16, 30));
+
+        day.setPauseStamp(1, {today, QTime(13, 0)});
+        day.removePause(0);
+        QVERIFY(day.pauseStamps().isEmpty());
+        QCOMPARE(day.end().time(), QTime(16, 30));
+    }
+
     void end()
     {
         // The WinUI defaults: a 45 minute pause and 7.75 hours.

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: istar-countdown\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 01:40+0100\n"
+"POT-Creation-Date: 2026-11-25 15:25+0100\n"
 "PO-Revision-Date: 2026-11-01 17:30+0100\n"
 "Last-Translator: Pascal Klose <istarlabs_dev@proton.me>\n"
 "Language-Team: German\n"
@@ -231,25 +231,53 @@ msgstr "Arbeitsbeginn"
 msgid "Pause (minutes)"
 msgstr "Pause (Minuten)"
 
-#: src/qml/WorkTimePage.qml:101
-#, kde-format
-msgid "Clocked pauses"
-msgstr "Gestempelte Pausen"
-
-#: src/qml/WorkTimePage.qml:108
+#: src/qml/WorkTimePage.qml:100
 #, kde-format
 msgid "Target time (hours:minutes)"
 msgstr "Soll-Zeit (Stunden:Minuten)"
 
-#: src/qml/WorkTimePage.qml:122
+#: src/qml/WorkTimePage.qml:114
 #, kde-format
 msgid "Working end"
 msgstr "Arbeitsende"
 
-#: src/qml/WorkTimePage.qml:130
+#: src/qml/WorkTimePage.qml:122
 #, kde-format
 msgid "Result"
 msgstr "Ergebnis"
+
+#: src/qml/WorkTimePage.qml:130
+#, kde-format
+msgid "Clocked pauses"
+msgstr "Gestempelte Pausen"
+
+#: src/qml/WorkTimePage.qml:163
+#, kde-format
+msgctxt "%1 is the number of the pause"
+msgid "Pause %1 began"
+msgstr "Pause %1 Beginn"
+
+#: src/qml/WorkTimePage.qml:171 src/qml/WorkTimePage.qml:183
+#, kde-format
+msgctxt "%1 is the number of the pause"
+msgid "Pause %1 ended"
+msgstr "Pause %1 Ende"
+
+#: src/qml/WorkTimePage.qml:184
+#, kde-format
+msgid "Still running"
+msgstr "Läuft noch"
+
+#: src/qml/WorkTimePage.qml:188
+#, kde-format
+msgctxt "%1 is the number of the pause"
+msgid "Remove Pause %1"
+msgstr "Pause %1 entfernen"
+
+#: src/qml/WorkTimePage.qml:198
+#, kde-format
+msgid "Add Pause"
+msgstr "Pause hinzufügen"
 
 #. i18n: %1 is the hours and %2 the minutes of the time worked, e.g. "7 h 45 min"
 #: src/worktime.cpp:124
@@ -257,26 +285,6 @@ msgstr "Ergebnis"
 msgctxt "worked time"
 msgid "%1 h %2 min"
 msgstr "%1 Std. %2 Min."
-
-#. i18n: a clocked pause, %1 is when it began and %2 when it ended
-#: src/worktime.cpp:146
-#, kde-format
-msgctxt "clocked pause"
-msgid "%1 – %2"
-msgstr "%1 – %2"
-
-#. i18n: a pause that is still running, %1 is when it began
-#: src/worktime.cpp:151
-#, kde-format
-msgctxt "running pause"
-msgid "since %1"
-msgstr "seit %1"
-
-#: src/worktime.cpp:157
-#, kde-format
-msgctxt "no clocked pauses"
-msgid "None"
-msgstr "Keine"
 
 #, kde-format
 #~ msgid "Save"
