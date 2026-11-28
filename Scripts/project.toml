@@ -16,6 +16,8 @@ application_id = "net.kurokyuu.app.istarcountdown"
 # The NDK the Craft container built the frameworks with. An older one packs a libc++_shared.so that lacks
 # symbols they need (std::__ndk1::__hash_memory), and the app dies in QtLoader at start.
 ndk = "~/Android/Sdk/ndk/30.0.16248370"
+# The adb the MAUI projects use too: one server, not two that restart each other. Fedora's is no longer installed.
+adb = "~/dev/tools/Google/Android/SDK/platform-tools/adb"
 
 # python3 Scripts/rpm.py publish: the package for an RPM repository (see rpm.py's docstring). Its own build
 # directory, so the development build (prefix ~/.local) is left alone.
